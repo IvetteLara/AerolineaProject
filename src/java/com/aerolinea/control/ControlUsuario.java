@@ -102,4 +102,30 @@ public class ControlUsuario {
         }
         return "redirect:/usuarios";
     }
+    
+    @RequestMapping(value = "/editUsuario", method = RequestMethod.GET)
+    public ModelAndView  editUsuario(@RequestParam("id") String id) {
+        
+        ModelAndView mv = new ModelAndView("registrarse");
+        Usuario u = dao.getUsuario(id);
+        List<Pais> p = dao.getPaises();
+        List<Rol> r = dao.getRoles();
+
+        mv.addObject("userForm", u);
+        mv.addObject("paises", p);
+        mv.addObject("roles", r);        
+        
+        return mv;
+    }
+    
+    @RequestMapping(value = "/removeUsuario", method = RequestMethod.GET)
+    public String removeUsuario(@RequestParam("id") String id) {
+
+        try {
+            dao.EliminarUsuario(id);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return "redirect:/usuarios";
+    }    
 }

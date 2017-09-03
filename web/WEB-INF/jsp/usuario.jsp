@@ -33,8 +33,8 @@
                         <td>${u.telefono}</td>
                         <td>${u.pais.pais}</td>
                         <td>${u.rol.rol}</td>
-                        <td></td>
-                        <td></td>
+                        <td><a href="<c:url value='/editUsuario?id=${u.idusuario}'/>">Editar</a></td>
+                        <td><a href="<c:url value='/removeUsuario?id=${u.idusuario}'/>">Eliminar</a></td>
                     </tr>
                 </c:forEach>
             </tbody>

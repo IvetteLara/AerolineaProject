@@ -109,12 +109,38 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
     @Override
     public Usuario getUsuario(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Usuario usuario = null;
+        Session s
+                = HibernateUtil.getSessionFactory().openSession();
+        try {
+            s.beginTransaction();
+            Query q = s.createQuery("select u from Usuario u where idusuario=:usuario");
+            q.setParameter("usuario", id);
+            usuario = (Usuario) q.uniqueResult();
+            s.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            s.close();
+        }
+        return usuario;
     }
 
     @Override
     public void EliminarUsuario(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Session s
+                = HibernateUtil.getSessionFactory().openSession();
+        try {
+            s.beginTransaction();
+            Query q = s.createQuery("delete from Usuario u where idusuario=:usuario");
+            q.setParameter("usuario", id);
+            q.executeUpdate();
+            s.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            s.close();
+        }
     }
 
     public static String sha1(String input) throws
