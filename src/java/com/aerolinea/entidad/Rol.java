@@ -1,5 +1,5 @@
 package com.aerolinea.entidad;
-// Generated 03-sep-2017 11:25:17 by Hibernate Tools 4.3.1
+// Generated Sep 3, 2017 11:36:18 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;

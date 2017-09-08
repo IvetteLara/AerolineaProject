@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,15 +29,19 @@ public class ControlUsuario {
     public void setDao(UsuarioDao dao) {
         this.dao = dao;
     }
-
+ 
+        
     @RequestMapping("/login")
-    public String logins(@RequestParam("txtUsuario") String usuario,
+    public String logins(@RequestParam("txtUsuario")String usuario,
             @RequestParam("txtClave") String clave,
             HttpServletRequest req) {
+
         Usuario u = new Usuario();
         u.setIdusuario(usuario);
         u.setClave(clave);
+        
         Usuario usuarioLogueado = dao.validarUsuario(u);
+        
         if (usuarioLogueado != null) {
             req.getSession().setAttribute("usuario",
                     usuarioLogueado.getIdusuario());
@@ -49,7 +54,8 @@ public class ControlUsuario {
             //req.getSession().setMaxInactiveInterval(10); // 10 segundos
             return "redirect:/principal";
         } else {
-            return "redirect:/home";
+            req.setAttribute("errMessage", "Error Login Incorrecto!");
+            return "index";
         }
     }
 
@@ -89,14 +95,35 @@ public class ControlUsuario {
             = RequestMethod.POST)
     public String addUsuario(@Valid
             @ModelAttribute("userForm") Usuario u,
-            BindingResult result) {
+            BindingResult result, Map<String, Object> model) {
 
+        if(u.getPais() == null || u.getPais().getIdpais() == 0) {
+            result.addError(new ObjectError("pais.idpais", "Debe seleccionar el país"));
+        }
+
+        if(u.getRol() == null || u.getRol().getIdrol() == 0) {
+            result.addError(new ObjectError("rol.idrol", "Debe seleccionar el rol"));
+        }
+        
+        if(!u.getClave().equals(u.getClave2())) {
+            result.addError(new ObjectError("clave", "Las claves deben de coincidir"));
+        }
+        
         if (result.hasErrors()) {
+            System.out.println("Este No Es Un Registro Válido!!!");
+            List<Pais> p = dao.getPaises();
+            List<Rol> r = dao.getRoles();
+            model.put("paises", p);
+            model.put("roles", r);
             return "registrarse";
         }
+        
         try {
-            u.setClave(UsuarioDaoImpl.sha1(u.getClave()));
-            dao.guardarUsuario(u);
+            if(u.isCambiarClave()) {
+                u.setClave(UsuarioDaoImpl.sha1(u.getClave()));
+            }
+            dao.guardarUsuario(u);            
+    
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -111,6 +138,9 @@ public class ControlUsuario {
         List<Pais> p = dao.getPaises();
         List<Rol> r = dao.getRoles();
 
+        u.setClave2(u.getClave());
+        u.setCambiarClave(false);
+        
         mv.addObject("userForm", u);
         mv.addObject("paises", p);
         mv.addObject("roles", r);        
@@ -128,4 +158,6 @@ public class ControlUsuario {
         }
         return "redirect:/usuarios";
     }    
+        
+  
 }

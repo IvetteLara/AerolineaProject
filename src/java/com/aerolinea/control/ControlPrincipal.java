@@ -8,8 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ControlPrincipal {
 
     @RequestMapping("/principal")
-    public String Principal() {
-        return "principal";
+    public String Principal(HttpServletRequest req) {
+        if(req.getSession().getAttribute("usuario") != null) {
+            return "principal";
+        } else {
+            return "index";
+        }
     }
 
     @RequestMapping("/cerrarsesion")
