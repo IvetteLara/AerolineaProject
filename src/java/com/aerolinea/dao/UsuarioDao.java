@@ -10,7 +10,7 @@ public interface UsuarioDao {
     public void guardarUsuario(Usuario u);
 
     public List<Usuario> consultarUsuarios();
-
+        
     public Usuario validarUsuario(Usuario u);
 
     public List<Rol> getRoles();

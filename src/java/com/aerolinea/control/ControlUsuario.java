@@ -23,10 +23,10 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ControlUsuario {
 
-    private UsuarioDao dao;
+    private UsuarioDaoImpl dao;
 
     @Autowired
-    public void setDao(UsuarioDao dao) {
+    public void setDao(UsuarioDaoImpl dao) {
         this.dao = dao;
     }
  
@@ -65,7 +65,10 @@ public class ControlUsuario {
         String msg = "Listado de usuarios";
         try {
             List<Usuario> lista = dao.consultarUsuarios();
+            List<Usuario> listaBackup = dao.consultarUsuariosBackup();
+
             mv.addObject("usuarios", lista);
+            mv.addObject("usuariosBackup", listaBackup);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

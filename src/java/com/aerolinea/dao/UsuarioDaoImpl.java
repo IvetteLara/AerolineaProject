@@ -3,21 +3,31 @@ package com.aerolinea.dao;
 import com.aerolinea.entidad.Pais;
 import com.aerolinea.entidad.Rol;
 import com.aerolinea.entidad.Usuario;
-import com.aerolinea.util.HibernateUtil;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UsuarioDaoImpl implements UsuarioDao {
 
+    @Autowired
+    @Qualifier(value="principal")
+    private SessionFactory sessionFactory;
+    
+    @Autowired
+    @Qualifier(value="backup")
+    private SessionFactory sessionFactoryBackup;
+    
     @Override
     public void guardarUsuario(Usuario u) {
-        Session s
-                = HibernateUtil.getSessionFactory().openSession();
+        //Session s = HibernateUtil.getSessionFactory().openSession(); 
+        Session s = sessionFactory.openSession(); 
         try {
             s.beginTransaction();
             s.saveOrUpdate(u);
@@ -33,8 +43,8 @@ public class UsuarioDaoImpl implements UsuarioDao {
     @Override
     public List<Usuario> consultarUsuarios() {
         List<Usuario> lista;
-        Session s
-                = HibernateUtil.getSessionFactory().openSession();
+        //Session s = HibernateUtil.getSessionFactory().openSession();
+        Session s = sessionFactory.openSession();
         try {
             s.beginTransaction();
             Query q = s.createQuery("select u from Usuario u join fetch u.pais join fetch u.rol");
@@ -51,11 +61,31 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
     }
 
+    public List<Usuario> consultarUsuariosBackup() {
+        List<Usuario> lista;
+        //Session s = HibernateUtil.getSessionFactory().openSession();
+        Session s = sessionFactoryBackup.openSession();
+        try {
+            s.beginTransaction();
+            Query q = s.createQuery("select u from Usuario u join fetch u.pais join fetch u.rol");
+            lista = q.list();
+
+            s.getTransaction().commit();
+
+            return lista;
+        } catch (Exception e) {
+            return null;
+        } finally {
+            s.close();
+        }
+
+    }
+    
     @Override
     public Usuario validarUsuario(Usuario u) {
         Usuario usuario = null;
-        Session s
-                = HibernateUtil.getSessionFactory().openSession();
+        //Session s = HibernateUtil.getSessionFactory().openSession();
+        Session s = sessionFactory.openSession();
         try {
             s.beginTransaction();
             Query q = s.createQuery("select u from Usuario u where idusuario=:usuario and clave =:clave");
@@ -74,8 +104,8 @@ public class UsuarioDaoImpl implements UsuarioDao {
     @Override
     public List<Rol> getRoles() {
         List<Rol> lista;
-        Session s
-                = HibernateUtil.getSessionFactory().openSession();
+        //Session s = HibernateUtil.getSessionFactory().openSession();
+        Session s = sessionFactory.openSession();
         try {
             s.beginTransaction();
             Query q = s.createQuery("from Rol");
@@ -92,8 +122,8 @@ public class UsuarioDaoImpl implements UsuarioDao {
     @Override
     public List<Pais> getPaises() {
         List<Pais> lista;
-        Session s
-                = HibernateUtil.getSessionFactory().openSession();
+        //Session s = HibernateUtil.getSessionFactory().openSession();
+        Session s = sessionFactory.openSession();
         try {
             s.beginTransaction();
             Query q = s.createQuery("from Pais");
@@ -110,8 +140,8 @@ public class UsuarioDaoImpl implements UsuarioDao {
     @Override
     public Usuario getUsuario(String id) {
         Usuario usuario = null;
-        Session s
-                = HibernateUtil.getSessionFactory().openSession();
+        //Session s = HibernateUtil.getSessionFactory().openSession();
+        Session s = sessionFactory.openSession();
         try {
             s.beginTransaction();
             Query q = s.createQuery("select u from Usuario u where idusuario=:usuario");
@@ -128,8 +158,8 @@ public class UsuarioDaoImpl implements UsuarioDao {
 
     @Override
     public void EliminarUsuario(String id) {
-        Session s
-                = HibernateUtil.getSessionFactory().openSession();
+        //Session s = HibernateUtil.getSessionFactory().openSession();
+        Session s = sessionFactory.openSession();
         try {
             s.beginTransaction();
             Query q = s.createQuery("delete from Usuario u where idusuario=:usuario");
