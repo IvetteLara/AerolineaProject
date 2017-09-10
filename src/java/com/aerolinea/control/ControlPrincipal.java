@@ -9,11 +9,11 @@ public class ControlPrincipal {
 
     @RequestMapping("/principal")
     public String Principal(HttpServletRequest req) {
-        if(req.getSession().getAttribute("usuario") != null) {
+        //if(req.getSession().getAttribute("usuario") != null) {
             return "principal";
-        } else {
-            return "index";
-        }
+        //} else {
+        //    return "index";
+        //}
     }
 
     @RequestMapping("/cerrarsesion")

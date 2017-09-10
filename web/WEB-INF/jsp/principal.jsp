@@ -9,9 +9,20 @@
         <title>JSP Page</title>
     </head>
     <body style="font-family: arial">
-        <h3>Bienvenido a Spring</h3>
         <%
             HttpSession s = request.getSession();
+            if(s.getAttribute("usuario") == null) {
+                response.sendRedirect(request.getContextPath()+ "/home");
+            }    
+            response.setHeader("Cache-Control", "no-cache");
+            response.setHeader("Cache-Control", "no-store");
+            response.setHeader("Pragma", "no-cache");
+            response.setDateHeader("Expires", 0);
+            
+        %>    
+        <h3>Bienvenido a Spring</h3>
+        <%
+            
             out.println("Usuario: " + s.getAttribute("usuario") + "<br/>");
             out.println("Nombre: " + s.getAttribute("nombre") + "<br/>");
             out.println("Correo: " + s.getAttribute("correo") + "<br/>");

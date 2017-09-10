@@ -76,17 +76,27 @@ public class ControlUsuario {
     }
 
     @RequestMapping(value = "/registrar", method = GET)
-    public String mostrarFormRegistro(Map<String, Object> model) {
-        Usuario userForm = new Usuario();
-        model.put("userForm", userForm);
+    public String mostrarFormRegistro(@RequestParam(value="id", required=false) String id, Map<String, Object> model) {
+        Usuario userForm;
+        
         try {
+            if(id == null) {
+                userForm = new Usuario();
+            } else {
+                userForm = dao.getUsuario(id);
+                userForm.setClave2(userForm.getClave());
+                userForm.setCambiarClave(false);        
+            }
+
+            model.put("userForm", userForm);
+            
             List<Pais> p = dao.getPaises();
             List<Rol> r = dao.getRoles();
             model.put("paises", p);
             model.put("roles", r);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        }
+        }        
 
         return "registrarse";
     }
@@ -130,7 +140,7 @@ public class ControlUsuario {
         return "redirect:/usuarios";
     }
     
-    @RequestMapping(value = "/editUsuario", method = RequestMethod.GET)
+    @RequestMapping(value = "/editar", method = RequestMethod.GET)
     public ModelAndView  editUsuario(@RequestParam("id") String id) {
         
         ModelAndView mv = new ModelAndView("registrarse");
@@ -148,7 +158,7 @@ public class ControlUsuario {
         return mv;
     }
     
-    @RequestMapping(value = "/removeUsuario", method = RequestMethod.GET)
+    @RequestMapping(value = "/remover", method = RequestMethod.GET)
     public String removeUsuario(@RequestParam("id") String id) {
 
         try {

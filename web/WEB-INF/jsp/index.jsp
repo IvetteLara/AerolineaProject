@@ -24,6 +24,11 @@
         </script>         
     </head>
     ${mensaje}
+    <%
+      if(request.getParameter("error")!= null) {
+          out.print("<p>Error: usuario o contraseña incorrecto</p>");
+      }  
+    %>    
     <body style="font-family: arial">
         <h3 >Inicio de Sesion</h3>
         <form name="form" action="<c:url value='/login' />" method="POST" onsubmit="return validate()">
