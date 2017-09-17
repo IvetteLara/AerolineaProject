@@ -7,6 +7,22 @@
         <meta http-equiv="Content-Type" content="text/html;
               charset=UTF-8">
         <title>JSP Page</title>
+        <script>
+            //JS
+            window.onpageshow = function(event) {
+                if(event.persisted) {
+                    window.location.reload(true);
+                }
+            };
+            
+            //JQuery
+            $(window).bind("pageshow", function(event) {
+                if(event.originalEvent.persisted) {
+                    window.location.reload()
+                }
+            });
+        </script>
+        
     </head>
     <body style="font-family: arial">
         <%
