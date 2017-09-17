@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -24,6 +25,7 @@ public class Usuario implements java.io.Serializable {
 
     @NotEmpty(message="El campo Usuario es obligatorio")
     @NotNull(message="El campo Usuario es obligatorio")
+    @Size(min=4,max=10,message="{usuario.idusuario.size}")
     private String idusuario;
     
     @NotEmpty(message="El campo Nombres es obligatorio")
