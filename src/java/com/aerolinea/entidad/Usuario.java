@@ -23,31 +23,31 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Table(name = "usuario")
 public class Usuario implements java.io.Serializable {
 
-    @NotEmpty(message="El campo Usuario es obligatorio")
-    @NotNull(message="El campo Usuario es obligatorio")
+    @NotEmpty(message="{usuario.idusuario.null}")
+    @NotNull(message="{usuario.idusuario.null}")
     @Size(min=4,max=10,message="{usuario.idusuario.size}")
     private String idusuario;
     
-    @NotEmpty(message="El campo Nombres es obligatorio")
-    @NotNull(message="El campo Nombres es obligatorio")
+    @NotEmpty(message="{usuario.nombres.null}")
+    @NotNull(message="{usuario.nombres.null}")
     private String nombres;
     
-    @NotEmpty(message="El campo Apellidos es obligatorio")
-    @NotNull(message="El campo Apellidos es obligatorio")
+    @NotEmpty(message="{usuario.apellidos.null}")
+    @NotNull(message="{usuario.apellidos.null}")
     private String apellidos;
     
-    @NotEmpty(message="El campo Email es obligatorio")
-    @NotNull(message="El campo Email es obligatorio")
+    @NotEmpty(message="{usuario.email.null}")
+    @NotNull(message="{usuario.email.null}")
     private String email;
     
     private String telefono;
     
-    @NotEmpty(message="El campo Clave es obligatorio")
-    @NotNull(message="El campo Clave es obligatorio")
+    @NotEmpty(message="{usuario.clave.null}")
+    @NotNull(message="{usuario.clave.null}")
     private String clave;
     
-    @NotEmpty(message="El campo Confirmar Clave es obligatorio")
-    @NotNull(message="El campo Confirmar Clave es obligatorio")
+    @NotEmpty(message="{usuario.clave2.null}")
+    @NotNull(message="{usuario.clave2.null}")
     private String clave2;
     
     private Pais pais;

@@ -6,7 +6,11 @@ import com.aerolinea.entidad.Pais;
 import com.aerolinea.entidad.Rol;
 import com.aerolinea.entidad.Usuario;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,8 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ControlUsuario {
 
+    String BUNDLE_NAME = "com.aerolinea.config.message";  
+    
     private UsuarioDaoImpl dao;
 
     @Autowired
@@ -54,8 +60,9 @@ public class ControlUsuario {
             //req.getSession().setMaxInactiveInterval(10); // 10 segundos
             return "redirect:/principal";
         } else {
-            req.setAttribute("errMessage", "Error Login Incorrecto!");
-            return "index";
+            //req.setAttribute("errMessage", "Error Login Incorrecto!");
+            //return "index";
+            return "redirect:/home?error=1";
         }
     }
 
@@ -104,22 +111,46 @@ public class ControlUsuario {
         return "registrarse";
     }
 
+    
+    private ResourceBundle getBundle(HttpServletRequest req) {
+        
+        Cookie[] cookies = req.getCookies();
+
+        String locale = "es";
+        
+        if (cookies != null) {
+         for (Cookie cookie : cookies) {
+           if (cookie.getName().equals("language")) {
+             locale = cookie.getValue();
+            }
+          }
+        }
+        
+        return ResourceBundle.getBundle(BUNDLE_NAME, new Locale(locale));
+    }
+    
+    
     @RequestMapping(value = "/addUsuario", method
             = RequestMethod.POST)
     public String addUsuario(@Valid
             @ModelAttribute("userForm") Usuario u,
-            BindingResult result, Map<String, Object> model) {
+            BindingResult result, Map<String, Object> model,
+            HttpServletRequest req) {
+        
 
+        ResourceBundle RESOURCE_BUNDLE = getBundle(req);
+
+    
         if(u.getPais() == null || u.getPais().getIdpais() == 0) {
-            result.addError(new ObjectError("pais.idpais", "Debe seleccionar el país"));
+            result.addError(new ObjectError("pais.idpais", RESOURCE_BUNDLE.getString("usuario.pais.idpais")));
         }
 
         if(u.getRol() == null || u.getRol().getIdrol() == 0) {
-            result.addError(new ObjectError("rol.idrol", "Debe seleccionar el rol"));
+            result.addError(new ObjectError("rol.idrol", RESOURCE_BUNDLE.getString("usuario.rol.idrol")));
         }
         
         if(!u.getClave().equals(u.getClave2())) {
-            result.addError(new ObjectError("clave", "Las claves deben de coincidir"));
+            result.addError(new ObjectError("clave", RESOURCE_BUNDLE.getString("usuario.clave.igual")));
         }
         
         if (result.hasErrors()) {
